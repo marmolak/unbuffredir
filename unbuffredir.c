@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include <stdlib.h>
 
 
 static const int MBYTE = 1024 * 1024;
@@ -38,15 +39,14 @@ static inline size_t uncached_write (int fd, const void *buf, size_t count)
 int main (int argc, char *argv[])
 {
         if ( argc < 2 ) {
-                return 1;
+                return EXIT_FAILURE;
         }
         const char *const fn = argv [1];
         int fd = open (fn, O_WRONLY | O_CREAT, 0600);
         if ( -1 == fd ) {
-                int errsv = errno;
                 printf ("ERROR! Failed to open %s!\n", fn);
 
-                return errsv;
+                return EXIT_FAILURE;
         }
 
         b_buff disk_buff;
@@ -72,9 +72,8 @@ int main (int argc, char *argv[])
                 disk_buff.wp = disk_buff.buff + disk_buff.count;
                 n = read (STDIN_FILENO, disk_buff.wp, disk_buff.free_space);
                 if ( n < 0 ) {
-                        int errsv = errno;
                         printf ("ERROR! Read from file failed! Data maybe lost!\n");
-                        return errsv;
+                        return EXIT_FAILURE;
                         break;
                 }
         } while ( n > 0 );
@@ -82,15 +81,14 @@ int main (int argc, char *argv[])
         if ( disk_buff.count != 0 ) {
                 const size_t ret = uncached_write (fd, disk_buff.buff, disk_buff.count);
                 if ( -1 == ret ) {
-                        int errsv = errno;
                         printf ("ERROR! Write to file failed! Data maybe lost!\n");
-                        return errsv;
+                        return EXIT_FAILURE;
                 }
 
         }
         init_buff (&disk_buff);
 
         close (fd);
-        return 0;
+        return EXIT_SUCCESS;
 }
 
