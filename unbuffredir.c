@@ -60,9 +60,8 @@ int main (int argc, char *argv[])
                 if ( 0 == disk_buff.free_space ) {
                         const size_t ret = uncached_write (fd, disk_buff.buff, disk_buff.count);
                         if ( -1 == ret ) {
-                                int errsv = errno;
                                 printf ("ERROR! Write to file failed! Data maybe lost!\n");
-                                return errsv;
+                                return EXIT_FAILURE;
                         }
 
                         init_buff (&disk_buff);
