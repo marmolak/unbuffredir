@@ -45,7 +45,6 @@ int main (int argc, char *argv[])
         int fd = open (fn, O_WRONLY | O_CREAT, 0600);
         if ( -1 == fd ) {
                 printf ("ERROR! Failed to open %s!\n", fn);
-
                 return EXIT_FAILURE;
         }
 
@@ -60,6 +59,7 @@ int main (int argc, char *argv[])
                 if ( 0 == disk_buff.free_space ) {
                         const size_t ret = uncached_write (fd, disk_buff.buff, disk_buff.count);
                         if ( -1 == ret ) {
+				close (fd);
                                 printf ("ERROR! Write to file failed! Data maybe lost!\n");
                                 return EXIT_FAILURE;
                         }
@@ -71,6 +71,7 @@ int main (int argc, char *argv[])
                 disk_buff.wp = disk_buff.buff + disk_buff.count;
                 n = read (STDIN_FILENO, disk_buff.wp, disk_buff.free_space);
                 if ( n < 0 ) {
+			close (fd);
                         printf ("ERROR! Read from file failed! Data maybe lost!\n");
                         return EXIT_FAILURE;
                         break;
@@ -80,10 +81,10 @@ int main (int argc, char *argv[])
         if ( disk_buff.count != 0 ) {
                 const size_t ret = uncached_write (fd, disk_buff.buff, disk_buff.count);
                 if ( -1 == ret ) {
+			close (fd);
                         printf ("ERROR! Write to file failed! Data maybe lost!\n");
                         return EXIT_FAILURE;
                 }
-
         }
         init_buff (&disk_buff);
 
