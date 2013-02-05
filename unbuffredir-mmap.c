@@ -102,14 +102,17 @@ int main (int argc, char *argv[])
 			commit (fd);
 			if ( munmap (disk_buff.buff, MBYTE) == -1 ) {
 				printf ("Unmap failed! Data maybe lost!\n");
+				close (fd);
 				return EXIT_FAILURE;
 			}
 			if ( fallocate (fd) < 0 ) {
 				printf ("Lseek failed! Data maybe lost!\n");
+				close (fd);
 				return EXIT_FAILURE;
 			}
 			if ( fmap (fd, &disk_buff, disk_buff.flen) < 0 ) {
 				printf ("Map of file failed! Data maybe lost!\n");
+				close (fd);
 				return EXIT_FAILURE;
 			}
 			fsp = MBYTE;
