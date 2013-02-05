@@ -93,13 +93,13 @@ int main (int argc, char *argv[])
 			close (fd);
 			return EXIT_FAILURE;
 		}
-		commit (fd);
 
 		disk_buff.flen += n;
 		disk_buff.wp += n;
 
 		fsp = MBYTE - (disk_buff.wp - disk_buff.buff);
 		if ( 0 == fsp ) {
+			commit (fd);
 			if ( munmap (disk_buff.buff, MBYTE) == -1 ) {
 				printf ("Unmap failed! Data maybe lost!\n");
 				return EXIT_FAILURE;
