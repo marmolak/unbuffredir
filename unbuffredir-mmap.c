@@ -61,7 +61,7 @@ static inline int fmap (const int fd, b_buff *const buf, const off_t offset)
 int main (int argc, char *argv[])
 {
         if ( argc < 2 ) {
-                return 1;
+                return 2;
         }
         const char *const fn = argv [1];
 	const int flags = O_RDWR | O_CREAT | O_TRUNC;
