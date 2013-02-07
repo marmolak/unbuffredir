@@ -8,7 +8,7 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <stdlib.h>
-
+#include <assert.h>
 
 static const int MBYTE = 1024 * 1024;
 
@@ -17,6 +17,7 @@ typedef struct b_buff {
         char *wp;
 	off_t flen;
 } b_buff;
+
 
 static inline void init_buff (b_buff *const buf)
 {
@@ -83,6 +84,8 @@ int main (int argc, char *argv[])
 
 	ssize_t n = 0;
 	ssize_t fsp = MBYTE - (disk_buff.wp - disk_buff.buff);
+	assert (fsp > 0);
+
 	do {
 		n = read (STDIN_FILENO, disk_buff.wp, fsp);
 		if ( n < 0 ) {
