@@ -38,7 +38,7 @@ static inline int fallocate (const int fd)
 	}
 
 	const ssize_t n = write (fd, "0", 1);
-	if ( n < 1 ) {
+	if ( n < 0 ) {
 		return -1;
 	}
 
